@@ -42,12 +42,26 @@ public class Controller {
             EventsModel eventsModel = objectMapper.readValue(eventsPayload, EventsModel.class);
 
             eventsModel.getEvents().forEach((event)->{
+                if (event instanceof MessageEvent) {
+                    replyText(replyToken, "Halo");
+                    MessageEvent messageEvent = (MessageEvent) event;
+                    TextMessageContent textMessageContent = (TextMessageContent) messageEvent.getMessage();
+                    replyText(messageEvent.getReplyToken(), textMessageContent.getText());
                 // kode reply message disini
-                eventsModel.getEvents().forEach((event)->{
-                    if (event instanceof MessageEvent) {
-                        MessageEvent messageEvent = (MessageEvent) event;
-                        TextMessageContent textMessageContent = (TextMessageContent) messageEvent.getMessage();
-                        replyText(messageEvent.getReplyToken(), textMessageContent.getText());
+                private void reply(ReplyMessage replyMessage) {
+                    try {
+                        lineMessagingClient.replyMessage(replyMessage).get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+
+                private void replyText(String replyToken, String messageToUser){
+                    TextMessage textMessage = new TextMessage(messageToUser);
+                    ReplyMessage replyMessage = new ReplyMessage(replyToken, textMessage);
+                    reply(replyMessage);
+                }
             });
 
             return new ResponseEntity<>(HttpStatus.OK);
@@ -56,24 +70,4 @@ public class Controller {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-            private void reply(ReplyMessage replyMessage) {
-                try {
-                    lineMessagingClient.replyMessage(replyMessage).get();
-                } catch (InterruptedException | ExecutionException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-
-            private void replyText(String replyToken, String messageToUser){
-                TextMessage textMessage = new TextMessage(messageToUser);
-                ReplyMessage replyMessage = new ReplyMessage(replyToken, textMessage);
-                reply(replyMessage);
-            }
-            private void replySticker(String replyToken, String packageId, String stickerId){
-                StickerMessage stickerMessage = new StickerMessage(packageId, stickerId);
-                ReplyMessage replyMessage = new ReplyMessage(replyToken, stickerMessage);
-                reply(replyMessage);
-            }
-        }
 }
