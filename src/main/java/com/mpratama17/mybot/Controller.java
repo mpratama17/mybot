@@ -19,13 +19,16 @@ import java.util.concurrent.ExecutionException;
 @RestController
 public class Controller {
 
+
     @Autowired
     @Qualifier("lineMessagingClient")
     private LineMessagingClient lineMessagingClient;
 
+
     @Autowired
     @Qualifier("lineSignatureValidator")
     private LineSignatureValidator lineSignatureValidator;
+
 
     @RequestMapping(value="/webhook", method= RequestMethod.POST)
     public ResponseEntity<String> callback(
@@ -37,37 +40,43 @@ public class Controller {
                 throw new RuntimeException("Invalid Signature Validation");
             }
 
-            // parsing event
+
             ObjectMapper objectMapper = ModelObjectMapper.createNewObjectMapper();
             EventsModel eventsModel = objectMapper.readValue(eventsPayload, EventsModel.class);
 
+
             eventsModel.getEvents().forEach((event)->{
                 if (event instanceof MessageEvent) {
-                    replyText(replyToken, "Halo");
                     MessageEvent messageEvent = (MessageEvent) event;
                     TextMessageContent textMessageContent = (TextMessageContent) messageEvent.getMessage();
                     replyText(messageEvent.getReplyToken(), textMessageContent.getText());
-                // kode reply message disini
-                private void reply(ReplyMessage replyMessage) {
-                    try {
-                        lineMessagingClient.replyMessage(replyMessage).get();
-                    } catch (InterruptedException | ExecutionException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-
-
-                private void replyText(String replyToken, String messageToUser){
-                    TextMessage textMessage = new TextMessage(messageToUser);
-                    ReplyMessage replyMessage = new ReplyMessage(replyToken, textMessage);
-                    reply(replyMessage);
                 }
             });
+
 
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (IOException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+    private void reply(ReplyMessage replyMessage) {
+        try {
+            lineMessagingClient.replyMessage(replyMessage).get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    private void replyText(String replyToken, String messageToUser){
+        TextMessage textMessage = new TextMessage(messageToUser);
+        ReplyMessage replyMessage = new ReplyMessage(replyToken, textMessage);
+        reply(replyMessage);
+    }
+    private void replySticker(String replyToken, String packageId, String stickerId){
+        StickerMessage stickerMessage = new StickerMessage(packageId, stickerId);
+        ReplyMessage replyMessage = new ReplyMessage(replyToken, stickerMessage);
+        reply(replyMessage);
     }
 }
