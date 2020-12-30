@@ -51,6 +51,17 @@ public class Controller {
                     MessageEvent messageEvent = (MessageEvent) event;
                     TextMessageContent textMessageContent = (TextMessageContent) messageEvent.getMessage();
                     replyText(messageEvent.getReplyToken(), textMessageContent.getText());
+                    //List<Message> msgArray = new ArrayList<>();
+                    //msgArray.add(new TextMessage(textMessageContent.getText()));
+                    //msgArray.add(new StickerMessage("1", "114"));
+                    //ReplyMessage replyMessage = new ReplyMessage(event.getReplyToken(), msgArray);
+                    //reply(replyMessage);
+                    if(textMessageContent.getText().equalsIgnoreCase("sticker")){
+                        replySticker(messageEvent.getReplyToken(), "1", "114");
+                    }else{
+                        replyText(messageEvent.getReplyToken(), "Selamat datang");
+                    }
+
                 }
             });
 
@@ -74,6 +85,7 @@ public class Controller {
         TextMessage textMessage = new TextMessage(messageToUser);
         ReplyMessage replyMessage = new ReplyMessage(replyToken, textMessage);
         reply(replyMessage);
+        replyText(replyToken, "Tes 123");
     }
     private void replySticker(String replyToken, String packageId, String stickerId){
         StickerMessage stickerMessage = new StickerMessage("1", "102");
