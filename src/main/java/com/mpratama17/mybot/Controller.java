@@ -89,16 +89,11 @@ public class Controller {
         PushMessage pushMessage = new PushMessage(sourceId,stickerMessage);
         push(pushMessage);
 
-        TextMessage textMessage = new TextMessage(textMsg);
-        PushMessage pushMessage = new PushMessage(userId, textMessage);
-        push(pushMessage)
 
 
         return new ResponseEntity<String>("Push message:"+textMsg+"\nsent to: "+userId, HttpStatus.OK);
     }
 
-    private void push(PushMessage pushMessage) {
-    }
 
 
     private void replyText(String replyToken, String messageToUser){
