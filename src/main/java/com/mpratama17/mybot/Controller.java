@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
+import static jdk.nashorn.internal.objects.NativeArray.push;
+
 @RestController
 public class Controller {
 
@@ -85,8 +87,12 @@ public class Controller {
             @PathVariable("id") String userId,
             @PathVariable("message") String textMsg
     ){
-        StickerMessage stickerMessage = new StickerMessage(1, 106);
-        PushMessage pushMessage = new PushMessage(sourceId,stickerMessage);
+        StickerMessage stickerMessage = new StickerMessage("1", "106");
+        PushMessage pushMessage = new PushMessage(userId,stickerMessage);
+        push(pushMessage);
+
+        TextMessage textMessage = new TextMessage(textMsg);
+        PushMessage pushMessage = new PushMessage(userId, textMessage);
         push(pushMessage);
 
 
