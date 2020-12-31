@@ -80,14 +80,18 @@ public class Controller {
             throw new RuntimeException(e);
         }
     }
-    @RequestMapping(value="/pushmessage/{id}/{message}", method=RequestMethod.GET)
+    @RequestMapping(value="/pushmessage/{Uac7ca19fe40b107af74f70bb88e2bcdc}/{Hallo}", method=RequestMethod.GET)
     public ResponseEntity<String> pushmessage(
             @PathVariable("id") String userId,
             @PathVariable("message") String textMsg
     ){
+        StickerMessage stickerMessage = new StickerMessage(1, 106);
+        PushMessage pushMessage = new PushMessage(sourceId,stickerMessage);
+        push(pushMessage);
+
         TextMessage textMessage = new TextMessage(textMsg);
         PushMessage pushMessage = new PushMessage(userId, textMessage);
-        push(pushMessage);
+        push(pushMessage)
 
 
         return new ResponseEntity<String>("Push message:"+textMsg+"\nsent to: "+userId, HttpStatus.OK);
