@@ -82,7 +82,7 @@ public class Controller {
             throw new RuntimeException(e);
         }
     }
-    @RequestMapping(value="/pushmessage/Uac7ca19fe40b107af74f70bb88e2bcdc/Hallo", method=RequestMethod.GET)
+    @RequestMapping(value="/pushmessage/{id}/{message}", method=RequestMethod.GET)
     public ResponseEntity<String> pushmessage(
             @PathVariable("id") String userId,
             @PathVariable("message") String textMsg
