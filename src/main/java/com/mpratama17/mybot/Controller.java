@@ -97,6 +97,8 @@ public class Controller {
         return new ResponseEntity<String>("Push message:"+textMsg+"\nsent to: "+userId, HttpStatus.OK);
     }
 
+    private void push(PushMessage pushMessage) {
+    }
 
 
     private void replyText(String replyToken, String messageToUser){
