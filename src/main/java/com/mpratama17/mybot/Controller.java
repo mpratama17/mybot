@@ -87,7 +87,7 @@ public class Controller {
             @PathVariable("id") String userId,
             @PathVariable("message") String textMsg
     ){
-        StickerMessage stickerMessage = new StickerMessage("1", "106");
+        StickerMessage stickerMessage = new StickestrMessage("1", "106");
         PushMessage pushMessage = new PushMessage(userId,stickerMessage);
         push(pushMessage);
 
