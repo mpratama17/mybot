@@ -108,6 +108,29 @@ public class Controller {
         }
         return new ResponseEntity<String>(HttpStatus.OK);
     }
+    @RequestMapping(value = "/profile", method = RequestMethod.GET)
+    public ResponseEntity<String> profile(){
+        String userId = "Isi dengan userId Anda";
+        UserProfileResponse profile = getProfile(userId);
+
+        if (profile != null) {
+            String profileName = profile.getDisplayName();
+            TextMessage textMessage = new TextMessage("Hello, " + profileName);
+            PushMessage pushMessage = new PushMessage(userId, textMessage);
+            push(pushMessage);
+
+            return new ResponseEntity<String>("Hello, "+profileName, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+    }
+    private UserProfileResponse getProfile(String userId){
+        try {
+            return lineMessagingClient.getProfile(userId).get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private void replyText(String replyToken, String messageToUser){
         TextMessage textMessage = new TextMessage(messageToUser);
