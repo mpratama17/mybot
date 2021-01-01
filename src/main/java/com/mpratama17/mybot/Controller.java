@@ -92,7 +92,15 @@ public class Controller {
         push(pushMessage);
 
         return new ResponseEntity<String>("Push message:"+textMsg+"\nsent to: "+userId, HttpStatus.OK);
+
+        }
     }
+    private void replyText(String replyToken, String messageToUser){
+        TextMessage textMessage = new TextMessage(messageToUser);
+        ReplyMessage replyMessage = new ReplyMessage(replyToken, textMessage);
+        reply(replyMessage);
+        replyText(replyToken, "Tes 123");
+
     @RequestMapping(value="/multicast", method=RequestMethod.GET)
     public ResponseEntity<String> multicast(){
         String[] userIdList = {
@@ -108,6 +116,18 @@ public class Controller {
         }
         return new ResponseEntity<String>(HttpStatus.OK);
     }
+        private void sendMulticast(Set<String> sourceUsers, String txtMessage){
+            TextMessage message = new TextMessage(txtMessage);
+            Multicast multicast = new Multicast(sourceUsers, message);
+
+            try {
+                lineMessagingClient.multicast(multicast).get();
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+
     @RequestMapping(value = "/profile", method = RequestMethod.GET)
     public ResponseEntity<String> profile(){
         String userId = "Isi dengan userId Anda";
@@ -132,12 +152,6 @@ public class Controller {
         }
     }
 
-    private void replyText(String replyToken, String messageToUser){
-        TextMessage textMessage = new TextMessage(messageToUser);
-        ReplyMessage replyMessage = new ReplyMessage(replyToken, textMessage);
-        reply(replyMessage);
-        replyText(replyToken, "Tes 123");
-    }
     private void replySticker(String replyToken, String packageId, String stickerId){
         StickerMessage stickerMessage = new StickerMessage("1", "102");
         ReplyMessage replyMessage = new ReplyMessage(replyToken, stickerMessage);
